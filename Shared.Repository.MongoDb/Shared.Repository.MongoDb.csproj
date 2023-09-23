@@ -1,14 +1,19 @@
 <Project Sdk="Microsoft.NET.Sdk">
+
   <PropertyGroup>
     <TargetFramework>net7.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
+
   <ItemGroup>
     <PackageReference Include="MongoDB.Bson" Version="2.21.0" />
     <PackageReference Include="MongoDB.Driver" Version="2.21.0" />
+    <PackageReference Include="MongoDB.Driver.Core" Version="2.21.0" />
   </ItemGroup>
+
   <ItemGroup>
-    <ProjectReference Include="..\..\..\Shared.Repository.MongoDb\Shared.Repository.MongoDb.csproj" />
+    <ProjectReference Include="..\src\Shared\Shared.Repository.Configuration\Shared.Repository.Configuration.csproj" />
   </ItemGroup>
+
 </Project>

@@ -15,8 +15,8 @@ public class CustomerController : ControllerBase
     }
     [HttpGet(Name = "customer.getlist")]
     [SwaggerOperation(Tags = new[] { "Customer" })]
-    [ProducesResponseType(typeof(List<CustomerReponse>), ((int)HttpStatusCode.OK))]
-    public async Task<ActionResult<List<CustomerReponse>>> GetListAsync([FromQuery] ListCustomerRequest request)
+    [ProducesResponseType(typeof(List<CustomerResponse>), ((int)HttpStatusCode.OK))]
+    public async Task<ActionResult<List<CustomerResponse>>> GetListAsync([FromQuery] ListCustomerRequest request)
     {
         if (ModelState.IsValid)
         {
@@ -26,8 +26,8 @@ public class CustomerController : ControllerBase
     }
     [HttpGet("{id}", Name = "customer.getdetail")]
     [SwaggerOperation(Tags = new[] {"Customer" })]
-    [ProducesResponseType(typeof(CustomerReponse), ((int)HttpStatusCode.OK))]
-    public async Task<ActionResult<CustomerReponse>> GetDetailAsync(int id)
+    [ProducesResponseType(typeof(CustomerResponse), ((int)HttpStatusCode.OK))]
+    public async Task<ActionResult<CustomerResponse>> GetDetailAsync(string id)
     {
         if(ModelState.IsValid)
         { 
@@ -37,8 +37,8 @@ public class CustomerController : ControllerBase
     }
     [HttpPost(Name = "customer.create")]
     [SwaggerOperation(Tags = new[] { "Customer" })]
-    [ProducesResponseType(typeof(CustomerReponse), ((int)HttpStatusCode.OK))]
-    public async Task<ActionResult<CustomerReponse>> CreatAsync(CustomerCreateRequest request)
+    [ProducesResponseType(typeof(CustomerResponse), ((int)HttpStatusCode.OK))]
+    public async Task<ActionResult<CustomerResponse>> CreatAsync(CustomerCreateRequest request)
     {
         if (ModelState.IsValid)
         {
@@ -48,8 +48,8 @@ public class CustomerController : ControllerBase
     }
     [HttpPut("{id}", Name = "customer.update")]
     [SwaggerOperation(Tags = new[] { "Customer" })]
-    [ProducesResponseType(typeof(CustomerReponse), ((int)HttpStatusCode.OK))]
-    public async Task<ActionResult<CustomerReponse>> UpdateAsync(int id, CustomerUpdateRequest request)
+    [ProducesResponseType(typeof(CustomerResponse), ((int)HttpStatusCode.OK))]
+    public async Task<ActionResult<CustomerResponse>> UpdateAsync(string id, CustomerUpdateRequest request)
     {
         if (ModelState.IsValid)
         {
@@ -60,7 +60,7 @@ public class CustomerController : ControllerBase
     [HttpDelete("{id}", Name = "customer.delete")]
     [SwaggerOperation(Tags = new[] { "Customer" })]
     [ProducesResponseType(((int)HttpStatusCode.NoContent))]
-    public async Task<NoContentResult> DeleteAsync(int id)
+    public async Task<NoContentResult> DeleteAsync(string id)
     {
         if (ModelState.IsValid)
         {

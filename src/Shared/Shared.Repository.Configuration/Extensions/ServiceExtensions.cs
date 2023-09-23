@@ -37,13 +37,11 @@ public static class ServiceExtensions
     /// <param name="services"></param>
     /// <param name="configuration"></param>
     /// <returns></returns>
-    public static DatabaseSettings GetDatabaseSettings<T, K>(this IServiceCollection services, IConfiguration configuration)
-       where T : class
-       where K : class
+    public static DatabaseSettings GetDatabaseSettings(this IServiceCollection services, IConfiguration configuration)
     {
-        DatabaseSettingItem[] itemDatabaseSettings = configuration.GetSection(nameof(DatabaseSettings)).Get<DatabaseSettingItem[]>();
+        List<DatabaseSettingItem> itemDatabaseSettings = configuration.GetSection(nameof(DatabaseSettings)).Get<List<DatabaseSettingItem>>();
 
-        var result = new DatabaseSettings(itemDatabaseSettings.ToList());
+        var result = new DatabaseSettings(itemDatabaseSettings);
 
         return result;
     }
@@ -60,7 +58,7 @@ public static class ServiceExtensions
 
         services.Configure<DatabaseSettings>(options =>
         {
-            options.ItemDatabaseSettings = itemDatabaseSettings.ToList();
+            options.DatabaseSettingItems = itemDatabaseSettings.ToList();
         });
 
         return services;
@@ -104,16 +102,16 @@ public static class ServiceExtensions
     {
         var connectionName = "DefaultConnection";
         services.AddConfigurationSettings(configuration);
-        var settings = services.GetDatabaseSettings<DatabaseSettingItem, DatabaseSettings>(configuration);
+        var settings = services.GetDatabaseSettings(configuration);
 
         ValidateSettings(settings);
 
-        if (!settings.ItemDatabaseSettings.Any())
+        if (!settings.DatabaseSettingItems.Any())
         {
             throw new Exception("Not found any database settings");
         }
 
-        DatabaseSettingItem defaultOption = settings.ItemDatabaseSettings.FirstOrDefault(x => x.Name.Equals(connectionName));
+        DatabaseSettingItem defaultOption = settings.DatabaseSettingItems.FirstOrDefault(x => x.Name.Equals(connectionName));
 
         if (defaultOption == null || string.IsNullOrEmpty(defaultOption?.ConnectionString))
         {
@@ -127,7 +125,7 @@ public static class ServiceExtensions
 
     public static void ValidateSettings(DatabaseSettings settings)
     {
-        var providers = settings.ItemDatabaseSettings.Select(x => x.DBProvider).Distinct().ToList();
+        var providers = settings.DatabaseSettingItems.Select(x => x.DBProvider).Distinct().ToList();
 
         var allowedProvider = new List<string>()
         {

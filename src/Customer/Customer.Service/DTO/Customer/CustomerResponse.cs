@@ -1,7 +1,7 @@
 namespace Customer.Service.DTO;
-public sealed class CustomerReponse
+public sealed class CustomerResponse
 {
-    public int Id { get; set; }
+    public string Id { get; set; }
     public string Name { get; set; }
     public decimal Price { get; set; }
     public required string CreatedBy { get; set; }

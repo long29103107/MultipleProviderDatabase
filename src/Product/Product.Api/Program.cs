@@ -9,6 +9,7 @@ using FluentValidation.AspNetCore;
 using FluentValidation;
 using Product.Service.Validation;
 using Shared.Repository.Configuration.Extensions;
+using Shared.Repository.Configuration.Settings;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());

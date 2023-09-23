@@ -16,6 +16,6 @@ public class CustomerProfile : Profile
     }
     private void ModelToResponse()
     {
-        CreateMap<Generate.Customer, CustomerReponse>();
+        CreateMap<Generate.Customer, CustomerResponse>();
     }
 }
