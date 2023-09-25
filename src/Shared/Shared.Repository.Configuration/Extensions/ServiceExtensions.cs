@@ -65,17 +65,12 @@ public static class ServiceExtensions
         }
         else if (defaultOption.DBProvider == DatabaseConstants.Providers.MySql)
         {
-            var builder = new MySqlConnectionStringBuilder(defaultOption.ConnectionString);
-
-            if(string.IsNullOrEmpty(assemblyName))
-            {
-                throw new Exception("Mysql must have assembly name");
-            }    
+            var builder = new MySqlConnectionStringBuilder(defaultOption.ConnectionString); 
 
             services.AddDbContext<T>(m => m.UseMySql(builder.ConnectionString,
                 ServerVersion.AutoDetect(builder.ConnectionString), e =>
                 {
-                    e.MigrationsAssembly(assemblyName);
+                    e.MigrationsAssembly(typeof(T).Assembly.FullName);
                     e.SchemaBehavior(MySqlSchemaBehavior.Ignore);
                 }));
 

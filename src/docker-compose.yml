@@ -41,6 +41,31 @@ services:
          - "27017:27017"
       volumes:
          - mongo_data:/data/db
+
+   basketdb:
+      image: postgres:alpine3.16
+      container_name: basketdb
+      environment:
+      - POSTGRES_USER
+      - POSTGRES_PASSWORD=admin1234
+      - POSTGRES_DB=BasketDb
+      restart: always
+      ports:
+         - "5433:5432"
+      volumes:
+         - postgres_data:/var/lib/postgresql/data
+
+   # pgadmin:
+   #     image: dpage/pgadmin4
+   #     container_name: pgadmin
+   #     environment:
+   #      - PGADMIN_DEFAULT_EMAIL=provider
+   #      - PGADMIN_DEFAULT_PASSWORD=admin1234
+   #     restart: always
+   #     ports:
+   #      - "5050:80"
+   #     volumes:
+   #      - pgadmin_data:/root/.pgadmin
          
    portainer:
       image: portainer/portainer-ce
@@ -72,3 +97,9 @@ volumes:
 
   mongo_data:
     name: mongo_data
+
+  # pgadmin_data:
+  #   name: pgadmin_data
+
+  postgres_data:
+    name: postgres_data
