@@ -1,6 +1,4 @@
-﻿using Microsoft.Extensions.Options;
-using MongoDB.Driver;
-using Shared.Repository.Configuration.Settings;
+﻿using MongoDB.Driver;
 
 namespace Shared.Repository.MongoDb.Data.Interfaces;
 public interface IMongoContext : IDisposable

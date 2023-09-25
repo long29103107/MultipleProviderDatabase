@@ -8,12 +8,15 @@ using System.Reflection;
 using FluentValidation.AspNetCore;
 using FluentValidation;
 using Category.Service.Validation;
+using Shared.Repository.Configuration.Extensions;
+
 var builder = WebApplication.CreateBuilder(args);
 builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddDbContext<RepositoryContext>(opt => opt.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+builder.Services.ConfigureDbContext<RepositoryContext>(builder.Configuration, "Category.Api");
+
 builder.Services.AddAutoMapper(typeof(AutoMapperConfig));
 builder.Services.AddValidatorsFromAssemblyContaining<CategoryValidator>();
 builder.Services.AddFluentValidationAutoValidation(); 

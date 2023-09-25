@@ -9,6 +9,6 @@
     <PackageReference Include="MongoDB.Driver" Version="2.21.0" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\Shared.Repository.MongoDb\Shared.Repository.MongoDb.csproj" />
+    <ProjectReference Include="..\..\Shared\Shared.Repository.MongoDb\Shared.Repository.NoSql.csproj" />
   </ItemGroup>
 </Project>

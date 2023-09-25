@@ -7,9 +7,7 @@
   </PropertyGroup>
 
   <ItemGroup>
-    <PackageReference Include="MySql.Data" Version="8.1.0" />
-	<PackageReference Include="Npgsql" Version="7.0.6" />
-	<PackageReference Include="Pomelo.EntityFrameworkCore.MySql" Version="7.0.0" />
+    <ProjectReference Include="..\Shared.Repository.Configuration\Shared.Repository.Configuration.csproj" />
   </ItemGroup>
 
 </Project>

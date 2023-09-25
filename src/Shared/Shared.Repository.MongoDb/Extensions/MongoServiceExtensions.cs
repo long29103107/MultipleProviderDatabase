@@ -1,6 +1,7 @@
 ﻿using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using MongoDB.Driver;
+using Shared.Repository.Configuration.Constants;
 using Shared.Repository.Configuration.Settings;
 using Shared.Repository.MongoDb.Data.Interfaces;
 
@@ -16,7 +17,7 @@ public static class MongoServiceExtensions
 
         services.AddSingleton(settings);
 
-        var connectionString = settings.DatabaseSettingItems.FirstOrDefault(x => x.Name == "DefaultConnection")?.ConnectionString;
+        var connectionString = settings.DatabaseSettingItems.FirstOrDefault(x => x.Name == DatabaseConstants.Connections.Default)?.ConnectionString;
         services.AddSingleton<IMongoClient>(c =>
         {
             return new MongoClient(connectionString);

@@ -9,10 +9,11 @@
 		<PackageReference Include="AutoMapper.Extensions.Microsoft.DependencyInjection" />
 		<PackageReference Include="Autofac" />
 		<PackageReference Include="Autofac.Extensions.DependencyInjection" />
-		<PackageReference Include="FluentValidation.AspNetCore"/>
-		<PackageReference Include="FluentValidation.DependencyInjectionExtensions"/>
+		<PackageReference Include="FluentValidation.AspNetCore" />
+		<PackageReference Include="FluentValidation.DependencyInjectionExtensions" />
 	</ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Shared\Shared.Repository.Configuration\Shared.Repository.Configuration.csproj" />
     <ProjectReference Include="..\Category.Repository\Category.Repository.csproj" />
     <ProjectReference Include="..\Category.Service\Category.Service.csproj" />
   </ItemGroup>

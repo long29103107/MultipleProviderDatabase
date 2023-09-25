@@ -12,6 +12,7 @@ using Shared.Repository.Configuration.Extensions;
 using Shared.Repository.Configuration.Settings;
 
 var builder = WebApplication.CreateBuilder(args);
+
 builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
@@ -38,6 +39,7 @@ builder.Host.ConfigureContainer<ContainerBuilder>(builder =>
         .As<IRepositoryWrapper>()
         .InstancePerLifetimeScope();
 });
+
 var app = builder.Build();
 if (app.Environment.IsDevelopment())
 {

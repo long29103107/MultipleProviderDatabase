@@ -1,8 +1,12 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.Data.SqlClient;
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using MySql.Data.MySqlClient;
+using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
 using Shared.Repository.Configuration.Constants;
 using Shared.Repository.Configuration.Settings;
+using System.Reflection;
 
 namespace Shared.Repository.Configuration.Extensions;
 public static class ServiceExtensions
@@ -30,41 +34,6 @@ public static class ServiceExtensions
     }
 
     /// <summary>
-    /// Get configuration database settings
-    /// </summary>
-    /// <typeparam name="T"></typeparam>
-    /// <typeparam name="K"></typeparam>
-    /// <param name="services"></param>
-    /// <param name="configuration"></param>
-    /// <returns></returns>
-    public static DatabaseSettings GetDatabaseSettings(this IServiceCollection services, IConfiguration configuration)
-    {
-        List<DatabaseSettingItem> itemDatabaseSettings = configuration.GetSection(nameof(DatabaseSettings)).Get<List<DatabaseSettingItem>>();
-
-        var result = new DatabaseSettings(itemDatabaseSettings);
-
-        return result;
-    }
-
-    /// <summary>
-    /// Configure multiple database settings by option design partern
-    /// </summary>
-    /// <param name="services"></param>
-    /// <param name="configuration"></param>
-    /// <returns></returns>
-    public static IServiceCollection AddConfigurationSettings(this IServiceCollection services, IConfiguration configuration)
-    {
-        DatabaseSettingItem[] itemDatabaseSettings = configuration.GetSection(nameof(DatabaseSettings)).Get<DatabaseSettingItem[]>();
-
-        services.Configure<DatabaseSettings>(options =>
-        {
-            options.DatabaseSettingItems = itemDatabaseSettings.ToList();
-        });
-
-        return services;
-    }
-
-    /// <summary>
     /// Add DbContext
     /// </summary>
     /// <typeparam name="T"></typeparam>
@@ -74,10 +43,11 @@ public static class ServiceExtensions
     /// <returns></returns>
     public static IServiceCollection ConfigDatabaseProvider<T>(this IServiceCollection services
         , IConfiguration configuration
-        , DatabaseSettingItem defaultOption)
+        , DatabaseSettingItem defaultOption
+        , string assemblyName = "")
         where T : DbContext
     {
-        if (defaultOption.DBProvider == DatabaseProviderConstants.SqlServer)
+        if (defaultOption.DBProvider == DatabaseConstants.Providers.SqlServer)
         {
             services.AddDbContext<T>(options =>
             {
@@ -85,8 +55,52 @@ public static class ServiceExtensions
                         builder => builder.MigrationsAssembly(typeof(T).Assembly.FullName));
             });
         }
+        else if (defaultOption.DBProvider == DatabaseConstants.Providers.Postgres)
+        {
+            services.AddDbContext<T>(options =>
+            {
+                options.UseSqlServer(defaultOption.ConnectionString,
+                        builder => builder.MigrationsAssembly(typeof(T).Assembly.FullName));
+            });
+        }
+        else if (defaultOption.DBProvider == DatabaseConstants.Providers.MySql)
+        {
+            var builder = new MySqlConnectionStringBuilder(defaultOption.ConnectionString);
+
+            if(string.IsNullOrEmpty(assemblyName))
+            {
+                throw new Exception("Mysql must have assembly name");
+            }    
+
+            services.AddDbContext<T>(m => m.UseMySql(builder.ConnectionString,
+                ServerVersion.AutoDetect(builder.ConnectionString), e =>
+                {
+                    e.MigrationsAssembly(assemblyName);
+                    e.SchemaBehavior(MySqlSchemaBehavior.Ignore);
+                }));
+
+        }
 
         return services;
+    }
+
+    /// <summary>
+    /// Get configuration database settings
+    /// </summary>
+    /// <typeparam name="T"></typeparam>
+    /// <typeparam name="K"></typeparam>
+    /// <param name="services"></param>
+    /// <param name="configuration"></param>
+    /// <returns></returns>
+    public static DatabaseSettings GetDatabaseSettings(this IServiceCollection services, IConfiguration configuration)
+    {
+        var result = new DatabaseSettings();
+        result.DatabaseSettingItems = configuration
+                            .GetSection($"{nameof(DatabaseSettings)}:{nameof(DatabaseSettings.DatabaseSettingItems)}")
+                            .Get<List<DatabaseSettingItem>>();
+
+        services.AddSingleton(result);
+        return result;
     }
 
     /// <summary>
@@ -97,11 +111,11 @@ public static class ServiceExtensions
     /// <param name="configuration"></param>
     /// <returns></returns>
     /// <exception cref="Exception"></exception>
-    public static IServiceCollection ConfigureDbContext<T>(this IServiceCollection services, IConfiguration configuration)
+    public static IServiceCollection ConfigureDbContext<T>(this IServiceCollection services
+        , IConfiguration configuration
+        , string assemblyName = "")
     where T : DbContext
     {
-        var connectionName = "DefaultConnection";
-        services.AddConfigurationSettings(configuration);
         var settings = services.GetDatabaseSettings(configuration);
 
         ValidateSettings(settings);
@@ -111,14 +125,14 @@ public static class ServiceExtensions
             throw new Exception("Not found any database settings");
         }
 
-        DatabaseSettingItem defaultOption = settings.DatabaseSettingItems.FirstOrDefault(x => x.Name.Equals(connectionName));
+        DatabaseSettingItem defaultOption = settings.DatabaseSettingItems.FirstOrDefault(x => x.Name.Equals(DatabaseConstants.Connections.Default));
 
         if (defaultOption == null || string.IsNullOrEmpty(defaultOption?.ConnectionString))
         {
             throw new Exception("Not found any database settings");
         }
 
-        services.ConfigDatabaseProvider<T>(configuration, defaultOption);
+        services.ConfigDatabaseProvider<T>(configuration, defaultOption, assemblyName);
 
         return services;
     }
@@ -129,9 +143,10 @@ public static class ServiceExtensions
 
         var allowedProvider = new List<string>()
         {
-            DatabaseProviderConstants.SqlServer,
-            DatabaseProviderConstants.Mongo,
-            DatabaseProviderConstants.MySql,
+             DatabaseConstants.Providers.SqlServer,
+             DatabaseConstants.Providers.Mongo,
+             DatabaseConstants.Providers.MySql,
+             DatabaseConstants.Providers.Postgres,
         };
 
         var inValidProviders = providers.Where(x => !allowedProvider.Contains(x))
