@@ -2,7 +2,6 @@ using Microsoft.EntityFrameworkCore;
 using Customer.Repository.Interfaces;
 using MongoDB.Driver;
 using Shared.Repository.MongoDb.Data.Interfaces;
-using ServiceStack;
 using SharpCompress.Common;
 using System.Linq.Expressions;
 using Shared.Repository.MongoDb.Domains;
