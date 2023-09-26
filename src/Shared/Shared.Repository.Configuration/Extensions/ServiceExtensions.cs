@@ -59,22 +59,22 @@ public static class ServiceExtensions
         {
             services.AddDbContext<T>(options =>
             {
-                options.UseSqlServer(defaultOption.ConnectionString,
-                        builder => builder.MigrationsAssembly(typeof(T).Assembly.FullName));
+                options.UseNpgsql(defaultOption.ConnectionString,
+                         builder => builder.MigrationsAssembly(typeof(T).Assembly.FullName));
             });
         }
         else if (defaultOption.DBProvider == DatabaseConstants.Providers.MySql)
         {
             var builder = new MySqlConnectionStringBuilder(defaultOption.ConnectionString); 
 
-            services.AddDbContext<T>(m => m.UseMySql(builder.ConnectionString,
-                ServerVersion.AutoDetect(builder.ConnectionString), e =>
-                {
-                    e.MigrationsAssembly(typeof(T).Assembly.FullName);
-                    e.SchemaBehavior(MySqlSchemaBehavior.Ignore);
-                }));
-
-        }
+            services.AddDbContext<T>(options => 
+                options.UseMySql(builder.ConnectionString,
+                    ServerVersion.AutoDetect(builder.ConnectionString), e =>
+                    {
+                        e.MigrationsAssembly(typeof(T).Assembly.FullName);
+                        e.SchemaBehavior(MySqlSchemaBehavior.Ignore);
+                    }));
+            }
 
         return services;
     }

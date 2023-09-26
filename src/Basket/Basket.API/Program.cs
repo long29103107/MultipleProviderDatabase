@@ -1,13 +1,13 @@
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
 using Microsoft.EntityFrameworkCore;
-using Category.Repository;
-using Category.Repository.Interfaces;
-using Category.Service.Profiles;
+using Basket.Repository;
+using Basket.Repository.Interfaces;
+using Basket.Service.Profiles;
 using System.Reflection;
 using FluentValidation.AspNetCore;
 using FluentValidation;
-using Category.Service.Validation;
+using Basket.Service.Validation;
 using Shared.Repository.Configuration.Extensions;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -16,18 +16,17 @@ builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.ConfigureDbContext<RepositoryContext>(builder.Configuration);
-
 builder.Services.AddAutoMapper(typeof(AutoMapperConfig));
-builder.Services.AddValidatorsFromAssemblyContaining<CategoryValidator>();
+builder.Services.AddValidatorsFromAssemblyContaining<BasketValidator>();
 builder.Services.AddFluentValidationAutoValidation(); 
 builder.Services.AddFluentValidationClientsideAdapters();
 builder.Host.ConfigureContainer<ContainerBuilder>(builder =>
 {
-    builder.RegisterAssemblyTypes(Assembly.Load("Category.Service"))
+    builder.RegisterAssemblyTypes(Assembly.Load("Basket.Service"))
                 .Where(t => t.Name.EndsWith("Service"))
                 .AsImplementedInterfaces()
                 .InstancePerLifetimeScope();
-    builder.RegisterAssemblyTypes(Assembly.Load("Category.Repository"))
+    builder.RegisterAssemblyTypes(Assembly.Load("Basket.Repository"))
         .Where(t => t.Name.EndsWith("Repository"))
         .AsImplementedInterfaces()
         .InstancePerLifetimeScope();

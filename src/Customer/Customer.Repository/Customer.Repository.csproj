@@ -5,9 +5,11 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="MongoDB.Driver.Linq.AsyncEnumerable" Version="2.15.4" />
+    <PackageReference Include="MongoDB.Driver.Linq.AsyncEnumerable" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\Shared\Shared.Repository.Configuration\Shared.Repository.Configuration.csproj" />
+    <ProjectReference Include="..\..\Shared\Shared.Repository.MongoDb\Shared.Repository.NoSql.csproj" />
     <ProjectReference Include="..\..\Shared\Shared.Repository\Shared.Repository.csproj" />
     <ProjectReference Include="..\Customer.Model\Customer.Model.csproj" />
   </ItemGroup>

@@ -5,10 +5,7 @@
     <Nullable>enable</Nullable>
   </PropertyGroup>
   <ItemGroup>
-    <PackageReference Include="MongoDB.Bson"/>
-    <PackageReference Include="MongoDB.Driver"/>
-  </ItemGroup>
-  <ItemGroup>
-    <ProjectReference Include="..\..\Shared\Shared.Repository.MongoDb\Shared.Repository.NoSql.csproj" />
+    <ProjectReference Include="..\Basket.Model\Basket.Model.csproj" />
+    <ProjectReference Include="..\Basket.Repository\Basket.Repository.csproj" />
   </ItemGroup>
 </Project>

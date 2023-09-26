@@ -1,16 +1,13 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
     <TargetFramework>net7.0</TargetFramework>
     <ImplicitUsings>enable</ImplicitUsings>
     <Nullable>enable</Nullable>
   </PropertyGroup>
-
   <ItemGroup>
-    <PackageReference Include="MySql.Data"/>
-	<PackageReference Include="Npgsql"/>
-    <PackageReference Include="Npgsql.EntityFrameworkCore.PostgreSQL"/>
-	<PackageReference Include="Pomelo.EntityFrameworkCore.MySql"/>
+    <PackageReference Include="Npgsql"/>
   </ItemGroup>
-
+  <ItemGroup>
+    <ProjectReference Include="..\Basket.Model\Basket.Model.csproj" />
+  </ItemGroup>
 </Project>
