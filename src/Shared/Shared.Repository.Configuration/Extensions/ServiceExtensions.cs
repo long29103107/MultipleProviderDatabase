@@ -12,7 +12,7 @@ namespace Shared.Repository.Configuration.Extensions;
 public static class ServiceExtensions
 {
     /// <summary>
-    /// Get options by section name in appsettings
+    ///  Get options by section name in appsettings
     /// </summary>
     /// <typeparam name="T"></typeparam>
     /// <param name="services"></param>
@@ -34,17 +34,17 @@ public static class ServiceExtensions
     }
 
     /// <summary>
-    /// Add DbContext
+    ///  Add DbContext
     /// </summary>
     /// <typeparam name="T"></typeparam>
     /// <param name="services"></param>
     /// <param name="configuration"></param>
     /// <param name="defaultOption"></param>
+    /// <param name="assemblyName"></param>
     /// <returns></returns>
     public static IServiceCollection ConfigDatabaseProvider<T>(this IServiceCollection services
         , IConfiguration configuration
-        , DatabaseSettingItem defaultOption
-        , string assemblyName = "")
+        , DatabaseSettingItem defaultOption)
         where T : DbContext
     {
         if (defaultOption.DBProvider == DatabaseConstants.Providers.SqlServer)
@@ -82,8 +82,6 @@ public static class ServiceExtensions
     /// <summary>
     /// Get configuration database settings
     /// </summary>
-    /// <typeparam name="T"></typeparam>
-    /// <typeparam name="K"></typeparam>
     /// <param name="services"></param>
     /// <param name="configuration"></param>
     /// <returns></returns>
@@ -104,11 +102,11 @@ public static class ServiceExtensions
     /// <typeparam name="T"></typeparam>
     /// <param name="services"></param>
     /// <param name="configuration"></param>
+    /// <param name="assemblyName"></param>
     /// <returns></returns>
     /// <exception cref="Exception"></exception>
     public static IServiceCollection ConfigureDbContext<T>(this IServiceCollection services
-        , IConfiguration configuration
-        , string assemblyName = "")
+        , IConfiguration configuration)
     where T : DbContext
     {
         var settings = services.GetDatabaseSettings(configuration);
@@ -127,12 +125,12 @@ public static class ServiceExtensions
             throw new Exception("Not found any database settings");
         }
 
-        services.ConfigDatabaseProvider<T>(configuration, defaultOption, assemblyName);
+        services.ConfigDatabaseProvider<T>(configuration, defaultOption);
 
         return services;
     }
 
-    public static void ValidateSettings(DatabaseSettings settings)
+    private static void ValidateSettings(DatabaseSettings settings)
     {
         var providers = settings.DatabaseSettingItems.Select(x => x.DBProvider).Distinct().ToList();
 
