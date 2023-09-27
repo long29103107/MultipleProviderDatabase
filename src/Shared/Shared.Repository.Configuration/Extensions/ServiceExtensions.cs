@@ -1,11 +1,15 @@
-﻿using Microsoft.Data.SqlClient;
+﻿using Autofac.Core;
+using Microsoft.Data.SqlClient;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using MongoDB.Driver;
+using MongoDB.Driver.Core.Configuration;
 using MySql.Data.MySqlClient;
 using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
 using Shared.Repository.Configuration.Constants;
 using Shared.Repository.Configuration.Settings;
+using System.Configuration;
 using System.Reflection;
 
 namespace Shared.Repository.Configuration.Extensions;
@@ -65,16 +69,16 @@ public static class ServiceExtensions
         }
         else if (defaultOption.DBProvider == DatabaseConstants.Providers.MySql)
         {
-            var builder = new MySqlConnectionStringBuilder(defaultOption.ConnectionString); 
+            var builder = new MySqlConnectionStringBuilder(defaultOption.ConnectionString);
 
-            services.AddDbContext<T>(options => 
+            services.AddDbContext<T>(options =>
                 options.UseMySql(builder.ConnectionString,
                     ServerVersion.AutoDetect(builder.ConnectionString), e =>
                     {
                         e.MigrationsAssembly(typeof(T).Assembly.FullName);
                         e.SchemaBehavior(MySqlSchemaBehavior.Ignore);
                     }));
-            }
+        }
 
         return services;
     }
@@ -109,6 +113,27 @@ public static class ServiceExtensions
         , IConfiguration configuration)
     where T : DbContext
     {
+        var defaultOption = services.GetDefaultSetting(configuration);
+        services.ConfigDatabaseProvider<T>(configuration, defaultOption);
+        return services;
+    }
+
+    public static IServiceCollection AddMongoService(this IServiceCollection services, IConfiguration configuration)
+    {
+        var defaultSettings = services.GetDefaultSetting(configuration);
+        services.AddSingleton<IMongoClient>(c =>
+        {
+            return new MongoClient(defaultSettings.ConnectionString);
+        });
+
+        services.AddScoped(c => c.GetService<IMongoClient>().StartSession());
+        return services;
+
+
+    }
+
+    private static DatabaseSettingItem GetDefaultSetting(this IServiceCollection services, IConfiguration configuration)
+    {
         var settings = services.GetDatabaseSettings(configuration);
 
         ValidateSettings(settings);
@@ -124,10 +149,7 @@ public static class ServiceExtensions
         {
             throw new Exception("Not found any database settings");
         }
-
-        services.ConfigDatabaseProvider<T>(configuration, defaultOption);
-
-        return services;
+        return defaultOption;
     }
 
     private static void ValidateSettings(DatabaseSettings settings)
