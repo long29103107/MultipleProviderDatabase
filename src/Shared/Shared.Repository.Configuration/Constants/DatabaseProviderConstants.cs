@@ -7,6 +7,8 @@ public class DatabaseConstants
         public const string Mongo = "mongo";
         public const string SqlServer = "sqlserver";
         public const string Postgres = "postgres";
+        public const string Sqlite = "sqlite";
+        public const string InMemory = "inmemory";
     }
    
     public class Connections

@@ -1,18 +1,13 @@
-﻿using Autofac.Core;
-using Microsoft.Data.SqlClient;
-using Microsoft.EntityFrameworkCore;
+﻿using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using MongoDB.Driver;
-using MongoDB.Driver.Core.Configuration;
 using MySql.Data.MySqlClient;
 using Pomelo.EntityFrameworkCore.MySql.Infrastructure;
 using Shared.Repository.Configuration.Constants;
 using Shared.Repository.Configuration.Settings;
-using System.Configuration;
-using System.Reflection;
-
 namespace Shared.Repository.Configuration.Extensions;
+
 public static class ServiceExtensions
 {
     /// <summary>
@@ -78,6 +73,21 @@ public static class ServiceExtensions
                         e.MigrationsAssembly(typeof(T).Assembly.FullName);
                         e.SchemaBehavior(MySqlSchemaBehavior.Ignore);
                     }));
+        }
+        else if (defaultOption.DBProvider == DatabaseConstants.Providers.Sqlite)
+        {
+            services.AddDbContext<T>(options =>
+            {
+                options.UseSqlite(defaultOption.ConnectionString,
+                    builder => builder.MigrationsAssembly(typeof(T).Assembly.FullName));
+            });
+        }
+        else if (defaultOption.DBProvider == DatabaseConstants.Providers.InMemory)
+        {
+            services.AddDbContext<T>(options =>
+            {
+                options.UseInMemoryDatabase(defaultOption.Name);
+            });
         }
 
         return services;
