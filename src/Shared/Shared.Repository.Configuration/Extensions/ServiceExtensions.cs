@@ -156,7 +156,7 @@ public static class ServiceExtensions
 
         DatabaseSettingItem defaultOption = settings.DatabaseSettingItems.FirstOrDefault(x => x.Name.Equals(DatabaseConstants.Connections.Default));
 
-        if (defaultOption == null || string.IsNullOrEmpty(defaultOption?.ConnectionString))
+        if (defaultOption == null || (!defaultOption.DBProvider.Equals(DatabaseConstants.Providers.InMemory) && string.IsNullOrEmpty(defaultOption?.ConnectionString)))
         {
             throw new Exception("Not found any database settings");
         }
@@ -174,6 +174,7 @@ public static class ServiceExtensions
              DatabaseConstants.Providers.MySql,
              DatabaseConstants.Providers.Postgres,
              DatabaseConstants.Providers.Sqlite,
+             DatabaseConstants.Providers.InMemory,
         };
 
         var inValidProviders = providers.Where(x => !allowedProvider.Contains(x))

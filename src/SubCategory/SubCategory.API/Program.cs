@@ -1,6 +1,5 @@
 using Autofac;
 using Autofac.Extensions.DependencyInjection;
-using Microsoft.EntityFrameworkCore;
 using SubCategory.Repository;
 using SubCategory.Repository.Interfaces;
 using SubCategory.Service.Profiles;
@@ -8,12 +7,16 @@ using System.Reflection;
 using FluentValidation.AspNetCore;
 using FluentValidation;
 using SubCategory.Service.Validation;
+using Shared.Repository.Configuration.Extensions;
+using System;
+
 var builder = WebApplication.CreateBuilder(args);
 builder.Host.UseServiceProviderFactory(new AutofacServiceProviderFactory());
 builder.Services.AddControllers();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
-builder.Services.AddDbContext<RepositoryContext>(opt => opt.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
+builder.Services.ConfigureDbContext<RepositoryContext>(builder.Configuration);
+builder.Services.AddScoped<RepositoryContext>();
 builder.Services.AddAutoMapper(typeof(AutoMapperConfig));
 builder.Services.AddValidatorsFromAssemblyContaining<SubCategoryValidator>();
 builder.Services.AddFluentValidationAutoValidation(); 
