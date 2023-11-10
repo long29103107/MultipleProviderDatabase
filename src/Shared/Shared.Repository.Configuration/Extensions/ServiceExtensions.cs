@@ -79,7 +79,7 @@ public static class ServiceExtensions
             services.AddDbContext<T>(options =>
             {
                 options.UseSqlite(defaultOption.ConnectionString,
-                    builder => builder.MigrationsAssembly(typeof(T).Assembly.FullName));
+                    sqliteOptionsAction: builder => builder.MigrationsAssembly(typeof(T).Assembly.FullName));
             });
         }
         else if (defaultOption.DBProvider == DatabaseConstants.Providers.InMemory)
@@ -102,6 +102,7 @@ public static class ServiceExtensions
     public static DatabaseSettings GetDatabaseSettings(this IServiceCollection services, IConfiguration configuration)
     {
         var result = new DatabaseSettings();
+
         result.DatabaseSettingItems = configuration
                             .GetSection($"{nameof(DatabaseSettings)}:{nameof(DatabaseSettings.DatabaseSettingItems)}")
                             .Get<List<DatabaseSettingItem>>();
@@ -172,6 +173,7 @@ public static class ServiceExtensions
              DatabaseConstants.Providers.Mongo,
              DatabaseConstants.Providers.MySql,
              DatabaseConstants.Providers.Postgres,
+             DatabaseConstants.Providers.Sqlite,
         };
 
         var inValidProviders = providers.Where(x => !allowedProvider.Contains(x))

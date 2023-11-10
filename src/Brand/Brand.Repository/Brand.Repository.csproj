@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <TargetFramework>net7.0</TargetFramework>
+    <ImplicitUsings>enable</ImplicitUsings>
+    <Nullable>enable</Nullable>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\Shared\Shared.Repository.Configuration\Shared.Repository.Configuration.csproj" />
+    <ProjectReference Include="..\..\Shared\Shared.Repository\Shared.Repository.csproj" />
+    <ProjectReference Include="..\Brand.Model\Brand.Model.csproj" />
+  </ItemGroup>
+</Project>
