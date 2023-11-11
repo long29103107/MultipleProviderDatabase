@@ -17,4 +17,5 @@
     <ProjectReference Include="..\Category.Repository\Category.Repository.csproj" />
     <ProjectReference Include="..\Category.Service\Category.Service.csproj" />
   </ItemGroup>
+  <ProjectExtensions><VisualStudio><UserProperties appsettings_1json__JsonSchema="https://json.schemastore.org/azure-deviceupdate-import-manifest-5.0.json" /></VisualStudio></ProjectExtensions>
 </Project>
