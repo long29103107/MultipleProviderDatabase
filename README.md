@@ -1,50 +1,44 @@
-# Project `gencode`, create a monolith project 
+# Project `multiple provider` using multiple provider
 
-## Build code
-* Step 1: Go to the folder you want to generate (folder contains `.sln`)
-- Create folder `Solution Items`
-- Create file  `database.dbml` in folder `Solution Items`
-
-* Step 2: Open terminal, go to folder contains file `.sln` in source `gencode`
+## Provider support
 ```
-dotnet build
-```
-* Step 3: On terminal, go to folder contains
-```
-...\gencode\src\gencode\bin\Debug\{{versionNet}}
-```
-Example
-```
-...\gencode\src\gencode\bin\Debug\net7.0
+public class Providers
+{
+    public const string MySql = "mysql";
+    public const string Mongo = "mongo";
+    public const string SqlServer = "sqlserver";
+    public const string Postgres = "postgres";
+    public const string Sqlite = "sqlite";
+    public const string InMemory = "inmemory";
+}
 ```
 
-* Step 4: Run command, (`{{Path}}` is the folder you want to generate )
+## Sql Server
+### Add `appsettings.json`
+
 ```
-gencode {{genCodeType}} {{nameModule}} {{Path}}
-```
-Example: Gen all (api, model, repository, service)
-```
-gencode all Product "D:\\3. DotNet\\TestGenerate\\"
-```
-## Gen code type
-* All: Gen structure, api, model, repository and service
-```
-gencode all {{nameModule}} {{Path}}
+  "DatabaseSettings": {
+    "DatabaseSettingItems": [
+      {
+        "Name": "DefaultConnection",
+        "DBProvider": "sqlserver",
+        "ConnectionString": "Server=localhost,1435;Database=ProductDb;User=sa;Password=Passw0rd!;MultipleActiveResultSets=True;TrustServerCertificate=true"
+      }
+    ]
+  }
 ```
 
-* API: Gen structure and api
+### Add `DbContext`
+
+- Import library
 ```
-gencode api {{nameModule}} {{Path}}
+using Shared.Repository.Configuration.Extensions;
 ```
-* Model: Gen structure and model
+
+- Add `Dbcontext`
 ```
-gencode model {{nameModule}} {{Path}}
+builder.Services.ConfigureDbContext<RepositoryContext>(builder.Configuration);
 ```
-* Repository: Gen structure and repository
-```
-gencode repository {{nameModule}} {{Path}}
-```
-* Service: Gen structure and service
-```
-gencode service {{nameModule}} {{Path}}
-```
+
+
+
